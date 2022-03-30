@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lz_flutter/flutter_base.dart';
 import '../widget/default_loading_dialog.dart';
+import 'package:flutter/semantics.dart';
 
 
 abstract class BaseState<T extends StatefulWidget>  extends State<T> implements View{
@@ -21,6 +22,7 @@ abstract class BaseState<T extends StatefulWidget>  extends State<T> implements 
       msg = msg.resLocal(getContext());
     }
     Fluttertoast.showToast(msg: msg);
+    SemanticsService.announce(msg, TextDirection.ltr);
   }
 
   @override
