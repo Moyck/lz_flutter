@@ -1,0 +1,66 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+xcversion(version: "~> 13.0")
+sync_code_signing(type: "development")
+sync_code_signing(type: "enterprise")
+cocoapods()
+
+platform :ios do
+  desc "dev for inHouse"
+  lane :dev do
+    Dir.chdir "../.." do
+      # 必须在这里运行flutter build，才能使用指定版本的xcode。
+      sh("./flutterw", "build", "ios", "-t", "lib/main_dev.dart", "--no-codesign")
+    end
+
+    # 不能写在 lane :dev do 外面，不然fastlane会先执行build app，再执行lane :dev do里面的指令
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner", export_method: "enterprise", export_options: {
+      provisioningProfiles: {
+        "com.enterprise.kanhan.test.green" => "match InHouse com.enterprise.kanhan.test.green"
+      }
+    })
+    # upload_to_testflight
+  end
+  desc "uat for inHouse"
+  lane :uat do
+    Dir.chdir "../.." do
+      # 必须在这里运行flutter build，才能使用指定版本的xcode。
+      sh("./flutterw", "build", "ios", "-t", "lib/main_uat.dart", "--no-codesign")
+    end
+
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner", export_method: "enterprise", export_options: {
+      provisioningProfiles: {
+        "com.enterprise.kanhan.test.green" => "match InHouse com.enterprise.kanhan.test.green"
+      }
+    })
+    # upload_to_testflight
+  end
+  desc "prod for inHouse"
+  lane :prod do
+    Dir.chdir "../.." do
+      # 必须在这里运行flutter build，才能使用指定版本的xcode。
+      sh("./flutterw", "build", "ios", "-t", "lib/main_prod.dart", "--no-codesign")
+    end
+
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner", export_method: "enterprise", export_options: {
+      provisioningProfiles: {
+        "com.enterprise.kanhan.test.green" => "match InHouse com.enterprise.kanhan.test.green"
+      }
+    })
+    # upload_to_testflight
+  end
+end

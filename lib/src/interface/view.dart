@@ -13,14 +13,14 @@ abstract class View {
 
   void showLoadingDialog({String msg,bool needLocal = false ,bool barrierDismissible = false});
 
-  void hideLoadingDialog();
+  void hideLoadingDialog({bool rootNavigator = false});
 
-  void pop({result});
+  void pop({Object? result,bool rootNavigator = false});
 
   void popTo(String routePath);
 
   void refresh();
 
-  Future<T?> routeTo<T extends Object?>(Route<T> newRoute,{bool replace = false,bool clearStack = false,RoutePredicate? predicate});
+  Future<T?> routeTo<T extends Object?>(Route<T> newRoute,{bool replace = false,bool clearStack = false,RoutePredicate? predicate,bool rootNavigator = false});
 
 }

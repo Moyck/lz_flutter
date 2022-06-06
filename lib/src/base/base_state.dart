@@ -3,10 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lz_flutter/flutter_base.dart';
 import '../widget/default_loading_dialog.dart';
-import 'package:flutter/semantics.dart';
+import 'package:get_it/get_it.dart';
+import 'package:lifecycle/lifecycle.dart';
 
+final getIt = GetIt.instance;
 
-abstract class BaseState<T extends StatefulWidget>  extends State<T> implements View{
+class Lifecycle{
+
+  void push(){}
+
+  void visible(){}
+
+  void active(){}
+
+  void inactive(){}
+
+  void invisible(){}
+
+  void willPop(){}
+
+}
+
+abstract class BaseState<T extends StatefulWidget>  extends State<T>  with LifecycleAware, LifecycleMixin,Lifecycle implements View {
+
+  @override
+  void onLifecycleEvent(LifecycleEvent event) {
+    if(event == LifecycleEvent.push){
+      push();
+    }else if(event == LifecycleEvent.visible){
+      visible();
+    }else if(event == LifecycleEvent.active){
+      active();
+    }else if(event == LifecycleEvent.inactive){
+      inactive();
+    }else if(event == LifecycleEvent.invisible){
+      invisible();
+    }else if(event == LifecycleEvent.pop){
+      willPop();
+    }
+  }
 
   @override
   void showMsgBySnackBar(String msg,{bool needLocal = false}) {
@@ -22,7 +57,6 @@ abstract class BaseState<T extends StatefulWidget>  extends State<T> implements 
       msg = msg.resLocal(getContext());
     }
     Fluttertoast.showToast(msg: msg);
-    SemanticsService.announce(msg, TextDirection.ltr);
   }
 
   @override
@@ -42,13 +76,13 @@ abstract class BaseState<T extends StatefulWidget>  extends State<T> implements 
   }
 
   @override
-  void hideLoadingDialog(){
-    pop();
+  void hideLoadingDialog({bool rootNavigator = false}){
+    pop(rootNavigator: rootNavigator);
   }
 
   @override
-  void pop({Object? result}) {
-    Navigator.of(getContext()).pop(result);
+  void pop({Object? result,bool rootNavigator = false}) {
+    Navigator.of(getContext(),rootNavigator: rootNavigator).pop(result);
   }
 
   @override
@@ -57,13 +91,14 @@ abstract class BaseState<T extends StatefulWidget>  extends State<T> implements 
   }
 
   @override
-  Future<T?> routeTo<T extends Object?>(Route<T> newRoute,{bool replace = false,bool clearStack = false,RoutePredicate? predicate}) async {
+  Future<T?> routeTo<T extends Object?>(Route<T> newRoute,{bool replace = false,bool clearStack = false,RoutePredicate? predicate,bool rootNavigator = false}) async {
+    NavigatorState  navigatorState = Navigator.of(getContext(),rootNavigator: rootNavigator);
     if(replace){
-      return Navigator.pushReplacement(getContext(), newRoute);
+      return navigatorState.pushReplacement(newRoute);
     } else if(clearStack){
-      return Navigator.pushAndRemoveUntil(getContext(), newRoute, predicate ?? (route) => false);
+      return navigatorState.pushAndRemoveUntil(newRoute, predicate ?? (route) => false);
     }else{
-      return Navigator.push<T>(getContext(), newRoute);
+      return navigatorState.push<T>(newRoute);
     }
   }
 
@@ -75,6 +110,49 @@ abstract class BaseState<T extends StatefulWidget>  extends State<T> implements 
     setState(() {
       
     });
+  }
+
+}
+
+abstract class BaseMVPState<T extends StatefulWidget,P extends BaseMvpPresenter>  extends BaseState<T> {
+
+  late P presenter;
+
+  @override
+  void initState() {
+    presenter = getIt<P>();
+    presenter.bind(this);
+    initData();
+    super.initState();
+    presenter.initState();
+  }
+
+  @override
+  void onLifecycleEvent(LifecycleEvent event) {
+    super.onLifecycleEvent(event);
+    if(event == LifecycleEvent.push){
+      presenter.push();
+    }else if(event == LifecycleEvent.visible){
+      presenter.visible();
+    }else if(event == LifecycleEvent.active){
+      presenter.active();
+    }else if(event == LifecycleEvent.inactive){
+      presenter.inactive();
+    }else if(event == LifecycleEvent.invisible){
+      presenter.invisible();
+    }else if(event == LifecycleEvent.pop){
+      presenter.willPop();
+    }
+  }
+
+  void initData(){
+
+  }
+
+  @override
+  void dispose() {
+    presenter.dispose();
+    super.dispose();
   }
 
 }

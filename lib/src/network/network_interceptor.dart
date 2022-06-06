@@ -8,18 +8,16 @@ class NetWorkInterceptor  extends InterceptorsWrapper{
     super.onError(err, handler);
     if (err.response?.statusCode == 403 ||
         err.response?.statusCode == 401) {
-      await onTokenError();
-      print('Token error ${err.response?.statusCode} , try again');
-      _retry(err.requestOptions);
+      await onTokenError(err);
       return;
     }
   }
 
-  Future onTokenError() async {
-
+  Future onTokenError(DioError err) async {
+    // retry(err.requestOptions);
   }
 
-  Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
+  Future<Response<dynamic>> retry(RequestOptions requestOptions) async {
     final options = new Options(
       method: requestOptions.method,
       headers: requestOptions.headers,

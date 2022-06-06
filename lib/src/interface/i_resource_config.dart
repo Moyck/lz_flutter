@@ -10,9 +10,9 @@ abstract class IResourceConfig {
   /**
    * 设置当前语言
    */
-  IResourceConfig setCurrentLanguageCode(String value);
+  IResourceConfig setCurrentLanguageCode(String? value);
 
-  String getCurrentLanguageCode();
+  String? getCurrentLanguageCode();
 
   /**
    * 设置默认语言

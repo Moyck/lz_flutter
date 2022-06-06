@@ -33,8 +33,8 @@ class LocalManager {
   }
 
   String getLanguageCode(BuildContext context,bool withArea){
-    if(Config.getInstance().resourceConfig.getCurrentLanguageCode().isNotEmpty)
-      return Config.getInstance().resourceConfig.getCurrentLanguageCode();
+    if(Config.getInstance().resourceConfig.getCurrentLanguageCode()!=null)
+      return Config.getInstance().resourceConfig.getCurrentLanguageCode()!;
     var local = Localizations.localeOf(context);
     if(withArea)
       return local.languageCode + "-" + (local.countryCode ?? '');

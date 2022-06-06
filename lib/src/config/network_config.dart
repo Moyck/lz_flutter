@@ -6,7 +6,7 @@ import '../interface/i_network_config.dart';
 
 
 class NetWorkConfig extends INetWorkConfig {
-  List<NetWorkInterceptor> _netWorkInterceptor = [DebuggerInterceptor()];
+  List<NetWorkInterceptor> _netWorkInterceptor = [];
   String _domain = '';
   String? _proxy = '';
   int _connectionTimeout = 30 * 1000;

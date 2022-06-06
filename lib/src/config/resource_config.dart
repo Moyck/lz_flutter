@@ -5,7 +5,7 @@ import '../utils/screen_util.dart';
 
 class ResourceConfig extends IResourceConfig {
   Map _localRes = Map();
-  String _currentLanguageCode = "";
+  String? _currentLanguageCode;
   String _defaultLanguageCode = "";
 
   @override
@@ -18,7 +18,7 @@ class ResourceConfig extends IResourceConfig {
   }
 
   @override
-  IResourceConfig setCurrentLanguageCode(String languageCode) {
+  IResourceConfig setCurrentLanguageCode(String? languageCode) {
     _currentLanguageCode = languageCode;
     return this;
   }
@@ -30,7 +30,7 @@ class ResourceConfig extends IResourceConfig {
   }
 
   @override
-  String getCurrentLanguageCode() => _currentLanguageCode;
+  String? getCurrentLanguageCode() => _currentLanguageCode;
 
   @override
   String getDefaultLanguageCode() => _defaultLanguageCode;

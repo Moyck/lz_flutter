@@ -7,6 +7,18 @@ abstract class IDebuggerConfig {
 
   void showDebuggerFloatingButton(BuildContext buildContext);
 
-  void startCatchAllException();
+  void start(String appID,String appSecret,{bool sendToServer = false});
+
+  void setId(String id);
+
+  String getId();
+
+  String getAppID();
+
+  void setAppID(String id);
+
+  String getAppSecret();
+
+  bool needSendToServer();
 
 }
