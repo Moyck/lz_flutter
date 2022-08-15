@@ -9,8 +9,8 @@ class NetWorkInterceptor  extends InterceptorsWrapper{
     if (err.response?.statusCode == 403 ||
         err.response?.statusCode == 401) {
       await onTokenError(err);
-      return;
     }
+    handler.next(err);
   }
 
   Future onTokenError(DioError err) async {

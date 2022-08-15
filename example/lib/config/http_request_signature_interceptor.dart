@@ -20,6 +20,7 @@ class HttpRequestSignatureInterceptor extends NetWorkInterceptor{
     options.headers['X-OPENINVITE-DEVICE-ID'] = '';
   }
 
+
   @override
   Future onTokenError(DioError err) => _securityApplication.refreshToken();
 
